@@ -9,6 +9,7 @@
 # ***************************************************************************************
 # ***************************************************************************************
 
+from error import *
 import re
 
 # ***************************************************************************************
@@ -33,6 +34,8 @@ import re
 class PreProcessor(object):
 	def __init__(self):
 		self.splitter = re.compile("([\{\}\;\~\+\-\*\/\%\^\&\|\>\!\?\s])")
+		self.identifierCheck = re.compile("^([a-z\_][0-9a-z\_\.\:]*)$")
+		self.constantCheck = re.compile("^([0-9]+)$")
 	#
 	#		Pre process a file. Makes a text file into an array where every element is a self contained
 	#		operation. 
@@ -80,9 +83,9 @@ if __name__ == "__main__":
 		height + width >e "simple_string"
 		proc:demo(w1,w2) 
 		{ hello(); }
-		if <if =if <until =until until for next 
+		if <if =if then begin <until =until until for next 
 	"""
-	code = "".join([ code ] * 2222)
+	code = "".join([ code ] * 2)
 	code = code.split("\n")
 	pp = PreProcessor()
 	xcode = pp.process(code)
