@@ -28,14 +28,19 @@ class BaseScanner(object):
 			BaseScanner._staticSetup = True
 			BaseScanner.DICTIONARY = dictionary
 			BaseScanner.TARGET = target 
-			BaseScanner.C_IDENTIFIER = re.compile("^[a-z\_][a-z\_0-9]*$")
-			BaseScanner.C_CONSTANT = re.compile("^\-?[0-9]+$")
+			BaseScanner.C_IDENTIFIER = "^[a-z\_][a-z\_0-9]*$"
+			BaseScanner.C_CONSTANT = "^\-?[0-9]+$"
 		self.create()
 	#
 	#		Create scanners own stuff if needed, compiled regEx etc.
 	#
 	def create(self):
-		pass 
+		self.compiledRegEx = re.compile("^"+self.getRegularExpression()+"$")
+	#
+	#		Get the check regex
+	#
+	def getRegularExpression(self):
+		return "^$"
 	#
 	#		Quick check does a fast check. It's default is to do a test to see if
 	#		the 'quick check character' is present. This is "is it worth checking properly"
@@ -52,14 +57,15 @@ class BaseScanner(object):
 	#		it can still fail syntactically.
 	#
 	def slowCheck(self,word):
-		assert False,"Not implemented"
+		self.groups = self.compiledRegEx.match(word)
+		return self.groups is not None
 	#
 	#		This is a slower, more precise check.
 	#
 	def check(self,word):
 		passed = False
 		if self.quickCheck(word):
-			passed = self.slowCheck()
+			passed = self.slowCheck(word)
 			if passed:
 				if BaseScanner.TARGET == "test":
 					self.codeGenerateDummy(word)
@@ -77,12 +83,4 @@ class BaseScanner(object):
 
 BaseScanner._staticSetup = False
 
-if __name__ == "__main__":
-	test = BaseScanner()
-	print(BaseScanner.TARGET)
-	samples = ["_a","42","demo_42","-13"]
-	for s in samples:
-		print("====== "+s+" =====")
-		print(BaseScanner.C_IDENTIFIER.match(s))
-		print(BaseScanner.C_CONSTANT.match(s))		
 
