@@ -1,27 +1,23 @@
 # ***************************************************************************************
 # ***************************************************************************************
 #
-#		Name : 		readwrite.py
+#		Name : 		error.py
 #		Author :	Paul Robson (paul@robsons.org.uk)
 #		Date : 		22nd December 2018
-#		Purpose :	Load and save memory scanners.
+#		Purpose :	Error handling.
 #
 # ***************************************************************************************
 # ***************************************************************************************
 
-from common import *
+# ***************************************************************************************
+#									Exception for HLA
+# ***************************************************************************************
 
-class LoadDirectScanner(BaseScanner):
-	def quickCheckCharacter(self):
- 		return "!"
-	def getRegularExpression(self):
-		return BaseScanner.C_IDENTIFIER+"\!"
+class AssemblerException(Exception):
+	def __init__(self,message):
+		Exception.__init__(self)
+		self.message = message
 
-if __name__ == "__main__":
-	l1 = LoadDirectScanner()
-	print(BaseScanner.TARGET)
-	samples = ["_a!","42","demo_42","-13"]
-	for s in samples:
-		print("====== "+s+" =====")
-		print(l1.check(s))
+AssemblerException.LINENUMBER = 0
+AssemblerException.FILENAME = ""
 
