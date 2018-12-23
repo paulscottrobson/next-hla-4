@@ -65,7 +65,13 @@ class PreProcessor(object):
 				code[i+1] = ""
 		code = [x for x in code if x != "" and x != ";"]								# remove empty and superfluous ;
 		return code
-
+	#
+	#		Get compiled regEx
+	#
+	def getIdentifierCheck(self):
+		return self.identifierCheck
+	def getConstantCheck(self):
+		return self.constantCheck
 
 if __name__ == "__main__":
 	code = """
