@@ -18,11 +18,11 @@ import re
 #	compilable objects, which should all be independent. However, there is no
 #	checking at all, so it will be done at compile time.
 #
-#	These can be: 
+#	These can be: (examples in test code )
 #		decimal constants
-#		identifiers
+#		identifiers including indirection
 #		binary operations followed by constants/identifiers
-#		assignment followed by identifier or identifier<?!><term>
+#		assignment including indirection
 #		quoted string with _ for space, alphanumerics only.
 #		complete constant, local, global, procedure defines
 #		complete invocations of procedures.
@@ -33,7 +33,7 @@ import re
 
 class PreProcessor(object):
 	def __init__(self):
-		self.splitter = re.compile("([\{\}\;\~\+\-\*\/\%\^\&\|\>\!\?\s])")
+		self.splitter = re.compile("([\{\}\;\~\+\-\*\/\%\^\&\|\>\s])")
 		self.identifierCheck = re.compile("^([a-z\_][0-9a-z\_\.\:]*)$")
 		self.constantCheck = re.compile("^([0-9]+)$")
 	#
@@ -60,13 +60,9 @@ class PreProcessor(object):
 			if len(code[i]) == 3:
 				if code[i][0] == "'" and code[i][2] == "'":
 					code[i] = str(ord(code[i][1]))
-			if len(code[i]) == 1 and ">+-*/%&|^!?".find(code[i]) >= 0:					# standard binary operation.
+			if len(code[i]) == 1 and ">+-*/%&|^".find(code[i]) >= 0:					# standard binary operation.
 				code[i] = code[i]+code[i+1] 
 				code[i+1] = ""
-				if code[i][0] == ">" and (code[i+2] == "!" or code[i+2] == "?"):		# indirect write ?
-					code[i] = code[i] + code[i+2] + code[i+3]
-					code[i+2] = ""
-					code[i+3] = ""
 		code = [x for x in code if x != "" and x != ";"]								# remove empty and superfluous ;
 		return code
 
@@ -79,7 +75,7 @@ if __name__ == "__main__":
 		word(b,23,c);a 'x'
 		global:a,b,cc
 		local:d,e,f
-		d + e + 42 ! g > a > b!4 > b?c
+		d[2] + e + 42 + g > a > b!4 > b[c]
 		height + width >e "simple_string"
 		proc:demo(w1,w2) 
 		{ hello(); }
