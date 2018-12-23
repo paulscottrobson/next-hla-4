@@ -3,7 +3,7 @@
 #
 #		Name : 		error.py
 #		Author :	Paul Robson (paul@robsons.org.uk)
-#		Date : 		22nd December 2018
+#		Date : 		23rd December 2018
 #		Purpose :	Error handling.
 #
 # ***************************************************************************************
